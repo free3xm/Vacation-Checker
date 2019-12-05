@@ -1,0 +1,35 @@
+.modalWrapper{
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  background: rgba(0,0,0,.3);
+}
+.modal{
+  width: 300px;
+  height: 110px;
+  background: #eee;
+  top: 20%;
+  left: calc(50% - 125px);
+  position: absolute;
+  display: -webkit-flex;
+  display: -ms-flex;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 2px 2px 3px #222;
+  text-align: center;
+}
+.btnWrapper{
+  display: -webkit-flex;
+  display: -ms-flex;
+  display: flex;
+  justify-content: space-around;
+  align-items: stretch;
+}
+.btnWrapper button{
+  width: 45%;
+  height: 40px;
+}
