@@ -1,5 +1,6 @@
 import React from "react";
-import cls from "./SignUp.module.css"
+import cls from "./SignUp.module.css";
+import config from "../../config.js";
 
 class SignUp extends React.Component {
   state ={
@@ -52,7 +53,7 @@ class SignUp extends React.Component {
     }
   signup(e){
     e.preventDefault();
-    fetch("http://localhost:3001/signup", {
+    fetch(config.url + "/signup", {
        method: "POST",
        headers: {
        "Content-Type":"application/json"

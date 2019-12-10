@@ -2,6 +2,7 @@
   font-size: 14px;
   font-weight: 400;
   width: 160px;
+  height: auto;
   background: #eee;
   border-radius: 3px;
   padding: 5px;
@@ -9,9 +10,20 @@
   box-shadow: 2px 2px 3px #ccc;
   top: 90px;
   left: 20px;
+  z-index: 99;
 }
 .err img{
   float: left;
   width: 25px;
   margin: 0 5px;
+}
+.btnErr{
+  display: block;
+  width: 80px;
+  margin: 0 auto;
+}
+@media screen and (max-width: 1600px){
+  .err{
+    left: calc(50% - 80px);
+  }
 }

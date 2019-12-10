@@ -6,11 +6,11 @@ import AddVaction from "./AddVaction/AddVaction";
 import VacationError from "./VacationError/VacationError";
 import EditVacation from "./EditVacation/EditVacation";
 import DeleteVacation from "./DeleteVacation/DeleteVacation";
+import config from "../../config.js";
 
 class User extends React.Component{
   state = {
       daysFromHiring: Math.floor((new Date() - new Date(this.props.user.date))/2592000000.0000005*1.75),
-      showAddVac: false,
       vacation:{
         startDate:"",
         endDate:"",
@@ -18,6 +18,9 @@ class User extends React.Component{
         description:""
       },
       valid:false,
+      add: {
+        show: false
+      },
       edit:{
         show: false,
         index: null,
@@ -29,6 +32,7 @@ class User extends React.Component{
         show:false
       },
       err:null,
+      filterOption:"",
       user: this.props.user
     };
 
@@ -46,7 +50,14 @@ class User extends React.Component{
     }
     return wDays
   }
-
+  updateAll(method, data){
+    this.props.updateUser(data);
+    this.updateDays();
+    let state = this.state;
+    state[method].show = false;
+    state.user = this.props.user;
+    this.setState(()=>state);
+  }
   updateDays(){
     let spentDays = this.props.user.vacations.reduce((sum, curr) => sum + curr.days,0);
     this.setState(()=>({
@@ -69,20 +80,25 @@ class User extends React.Component{
             endDate = new Date(vacation.endDate);
 
       if(startDate <= endDate){
+        if(startDate > new Date(this.state.user.date)){
+          let wDays = this.getWorkingDays(startDate, endDate);
 
-        let wDays = this.getWorkingDays(startDate, endDate);
+          if(wDays <= this.state.daysOfVacation){
+            let state = this.state;
+            state.valid = true;
+            state.err = null;
+            state.vacation.days = wDays;
+            this.setState(()=>state);
 
-        if(wDays <= this.state.daysOfVacation){
-          let state = this.state;
-          console.log(state)
-          state.valid = true;
-          state.err = null;
-          state.vacation.days = wDays;
-          this.setState(()=>state);
-
+          }else{
+            this.setState(()=>({
+              err: "The number of working days may not exceed the number of vacation days.",
+              valid:  false
+            }));
+          }
         }else{
           this.setState(()=>({
-            err: "The number of working days may not exceed the number of vacation days.",
+            err: "The start date of vacation cannot be less than the employment date",
             valid:  false
           }));
         }
@@ -96,15 +112,17 @@ class User extends React.Component{
   }
 
   showAddVacavtion(){
+    let state = this.state
+    state.add.show = true
       this.setState(()=> ({
-        showAddVac: true
+        state
       }));
   }
 
   submitVacation(event){
     event.preventDefault();
     if(this.state.valid){
-      fetch(this.props.url+"/addvacation",{
+      fetch(config.url+"/addvacation",{
         method:"PUT",
         headers:{
           "Content-Type":"application/json",
@@ -114,14 +132,10 @@ class User extends React.Component{
           vacation:  this.state.vacation
         })
       }).then(res => res.json())
-      .then(data => {
-        this.setState(()=> ({
-          showAddVac: false
-        }));
-        this.props.updateUser(data);
-        this.updateDays();
-      })
-      .catch(err => console.log(err));
+      .then(data => this.updateAll("add", data))
+      .catch(err => this.setState(()=>({
+        err
+      })));
     }
   }
 
@@ -165,7 +179,7 @@ class User extends React.Component{
   editVacSubmit(event){
     if(this.state.edit.valid){
       event.preventDefault();
-      fetch("http://localhost:3001/edit",{
+      fetch(config.url + "/edit",{
         method:"PUT",
         headers:{
           "Content-Type":"application/json",
@@ -176,21 +190,16 @@ class User extends React.Component{
           index: this.state.edit.index
         })
       }).then(res => res.json())
-      .then(data => {
-        this.props.updateUser(data);
-        this.updateDays();
-        let state = this.state;
-        state.edit.show = false;
-        state.user = this.props.user;
-        this.setState(()=>state);
-      })
-      .catch(err => console.log(err));
+      .then(data => this.updateAll("edit", data))
+      .catch(err => this.setState(()=>({
+        err
+      })));
     }
   }
 
   submitDelete(event){
     event.preventDefault();
-    fetch("http://localhost:3001/deletevaction",{
+    fetch(config.url + "/deletevaction",{
       method:"DELETE",
       headers:{
         "Content-Type":"application/json",
@@ -200,21 +209,16 @@ class User extends React.Component{
         index: this.state.delete.index
       })
     }).then(res => res.json())
-    .then(data => {
-      this.props.updateUser(data);
-      this.updateDays();
-      let state = this.state;
-      state.delete.show = false;
-      state.user = this.props.user;
-      this.setState(()=>state);
-    })
-    .catch(err => console.log(err));
+    .then(data => this.updateAll("delete", data))
+    .catch(err => this.setState(()=>({
+      err
+    })));
   }
 
 
   closeBtn(){
     let state = this.state;
-    state.showAddVac = false;
+    state.add.show = false;
     state.vacation.startDate="";
     state.vacation.endDate="";
     state.vacation.description="";
@@ -227,11 +231,26 @@ class User extends React.Component{
     this.setState(()=>state);
   }
 
+  filterHandler(event){
+    let filterOption = event.target.value
+    if(filterOption !== "all"){
+      this.setState(()=>({
+        filterOption
+      }))
+    }else {
+      this.setState(() => ({
+        filterOption: ""
+      }))
+    }
+  }
+  closeErr(){
+    this.setState(()=>({
+      err:null
+    }))
+  }
   render(){
-    console.log(this.state)
-    console.log(this.props)
     return (
-      <div className={cls.UserWrapper}>
+      <div className={cls.userWrapper}>
       {this.state.edit.show ? <EditVacation vac={this.state.vacation}
                                             change={this.editVacationHandler.bind(this)}
                                             editSubmit={this.editVacSubmit.bind(this)}
@@ -240,14 +259,17 @@ class User extends React.Component{
                                             : null}
       {this.state.delete.show ? <DeleteVacation subDelete={this.submitDelete.bind(this)}
                                                 close={this.closeBtn.bind(this)}/> : null}
+
         <div className={cls.userHeader}>
-          <span>User: {this.props.user.name[0].toUpperCase() + this.props.user.name.slice(1)}</span>
-          {this.state.err && this.state.showAddVac ? <VacationError err={this.state.err}/> : null}
+          <span>User: {this.state.user.name[0].toUpperCase() + this.state.user.name.slice(1)}</span>
+          {this.state.err && this.state.add.show ? <VacationError err={this.state.err}
+                                                                  closeErr={this.closeErr.bind(this)}/>
+                                                                  : null}
         </div>
         <div className={cls.userMain}>
-          {!this.state.showAddVac ?
-            <UserInfo email={this.props.user.email}
-                    date={this.props.user.date}
+          {!this.state.add.show ?
+            <UserInfo email={this.state.user.email}
+                    date={this.state.user.date}
                     days={this.state.daysOfVacation}
                     showAddVac={this.showAddVacavtion.bind(this)}/>
                     :
@@ -265,7 +287,7 @@ class User extends React.Component{
                     <li>End date</li>
                     <li>Description</li>
                     <li>
-                      <select className={cls.filter}>
+                      <select onChange={this.filterHandler.bind(this)} className={cls.filter}>
                         <option value="all">All</option>
                         {Array.from(new Set(this.state.user.vacations.map(e => e.startDate.slice(0,4)))).map((e,i) => <option key={i} value={e}>{e}</option>)}
                       </select>
@@ -273,16 +295,17 @@ class User extends React.Component{
                   </ul>
                 </div>
                 <ul className={cls.listVacations}>
-                  {this.props.user.vacations.map((e,i) => (
-                    <UserVacations key={i}
-                                   index={i}
-                                   startDate={e.startDate}
-                                   endDate={e.endDate}
-                                   description={e.description}
-                                   editHandler={this.vacationHandler.bind(this, i, "edit")}
-                                   deleteHandler={this.vacationHandler.bind(this, i, "delete")}
-                                   />))
-                  }
+                {this.state.user.vacations.map((e,i) => !this.state.filterOption ||this.state.filterOption === e.startDate.slice(0,4) ? (<UserVacations key={i}
+                                 index={i}
+                                 startDate={e.startDate}
+                                 endDate={e.endDate}
+                                 description={e.description}
+                                 editHandler={this.vacationHandler.bind(this, i, "edit")}
+                                 deleteHandler={this.vacationHandler.bind(this, i, "delete")}
+                                 />)
+                                 :
+                                 null
+                               )}
                 </ul>
               </div>
         </div>

@@ -4,11 +4,14 @@ const express = require("express"),
       port = 3001,
       jwt = require("jsonwebtoken"),
       bodyParser = require("body-parser"),
-      app = express(),
-      secret = "saGDdsfSFdsfjmgkfAFSFHNJEAdfdsfDFGdfd",
-      url = "mongodb+srv://user:123456qwerty@usersdb-gtbbi.mongodb.net/usersdb";
-const User = require("./user");
+      app = express();
+require("dotenv").config();
 
+app.use(express.static(__dirname + "/build"))
+const urlDb = process.env.DB_URL,
+      secret = process.env.TOKEN_SECRET;
+
+const User = require("./user");
 async function getUser(t, s){
   let decoded = jwt.verify(t, s),
       user = await User.findOne({
@@ -27,7 +30,7 @@ function returnData(u){
 }
 (async () => {
     try{
-      await mongoose.connect(url, {
+      await mongoose.connect(urlDb, {
         useNewUrlParser: true
       });
     } catch(err){
@@ -52,7 +55,7 @@ app.post("/", async (req, res) => {
   }));
 });
 
-app.get("/", async (req, res) => {
+app.get("/auth", async (req, res) => {
   const token = req.headers["auth-token"];
   let decoded, user;
   try{
@@ -133,6 +136,6 @@ app.delete("/deletevaction", async (req, res)=>{
 
 app.listen(port, err => {
   if(err){
-    console.log("error "+ error);
+    console.log("error " + error);
   }else console.log("server has been started...");
 });

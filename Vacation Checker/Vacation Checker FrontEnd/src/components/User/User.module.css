@@ -1,7 +1,7 @@
-.UserWrapper{
+.userWrapper{
   width: 60vw;
   height: 325px;
-  margin: 40px auto;
+  margin: 40px auto 0 auto;
   background: #fff;
   box-shadow: 2px 2px 5px #666;
   border-radius: 5px;
@@ -32,6 +32,7 @@
   background: #eee;
   border-radius: 5px;
   box-shadow: 2px 2px 3px #888;
+  font-size: 16px;
 }
 .listVacationsHeader{
   background: #4fc3f7;
@@ -78,4 +79,42 @@
 }
 .listVacations li:nth-child(even){
   background: #ccc;
+}
+@media screen and (max-width: 1600px){
+  .userWrapper{
+    width: 80vw;
+  }
+}
+@media screen and (max-width: 1200px){
+  .UserWrapper{
+    width: 95vw;
+  }
+}
+@media screen and (max-width: 1000px){
+  .userMain{
+    flex-direction: column;
+    height: auto;
+  }
+  .userWrapper{
+    height: auto;
+  }
+  .listVacationsWrapper{
+    width: 100%;
+    margin: 15px;
+  }
+}
+@media screen and (max-width: 900px){
+  .userWrapper{
+    width: 96vw;
+  }
+}
+@media screen and (max-width: 500px){
+  .userMain{
+    padding: 0 10px;
+  }
+}
+@media screen and (max-width: 450px){
+  .listVacationsHeader{
+    font-size: 12px;
+  }
 }

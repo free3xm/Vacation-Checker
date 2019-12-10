@@ -9,8 +9,8 @@ export default props =>{
       <p>{props.endDate}</p>
       <p className={cls.description}>{props.description}</p>
       <div className={cls.btnWrapper}>
-        <button onClick={props.editHandler}>Edit</button>
-        <button onClick={props.deleteHandler}>Delete</button>
+        <button className={cls.btnVacation} onClick={props.editHandler}>Edit</button>
+        <button className={cls.btnVacation} onClick={props.deleteHandler}>Delete</button>
       </div>
     </li>
   );

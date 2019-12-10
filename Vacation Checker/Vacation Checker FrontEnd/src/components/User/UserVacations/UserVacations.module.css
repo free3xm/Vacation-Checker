@@ -20,8 +20,26 @@
 .btnWrapper{
   width: calc(34% - 30px);
 }
-.btnWrapper button{
-  width: 45%;
+.btnVacation{
+  display: inline-block;
+  width: 50%;
   height: 45px;
-  margin-right: 5px;
-};
+}
+@media screen and (max-width: 1100px){
+  .btnVacation{
+    margin-right: 0;
+    width: 49%;
+
+  }
+}
+@media screen and (max-width: 450px){
+  .vacation{
+    font-size: 12px;
+  }
+  .btnWrapper{
+    width: 36%;
+  }
+  .btnVacation{
+    font-size: 10px;
+  }
+}

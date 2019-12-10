@@ -1,6 +1,6 @@
 .main{
-  width: 250px;
-  height: 175px;
+  width: 230px;
+  height: 240px;
   margin: 80px auto;
   background: #fff;
   border-radius: 5px;
@@ -10,12 +10,13 @@
   padding-top: 10px;
 }
 .form *{
-  margin: 5px 0;
+  margin: 7px auto;
   width: 200px;
   height: 30px;
 }
 .form input{
   padding-left: 5px;
+  height: 35px;
 }
 .form{
   text-align: center;
@@ -37,4 +38,27 @@
   display: block;
   height: 10px;
   text-align: center;
+}
+.checkboxWrapper{
+  display: -webkit-flex;
+  display: -ms-flex;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+  font-size: 15px;
+  height: 30px;
+  width: 110px;
+}
+.checkboxWrapper label{
+  white-space: nowrap;
+  line-height: 30px;
+  text-align: left;
+  margin-right: 10px;
+  user-select: none;
+  cursor: pointer;
+}
+.forgotPass{
+  text-decoration: none;
+  color: #000
 }
