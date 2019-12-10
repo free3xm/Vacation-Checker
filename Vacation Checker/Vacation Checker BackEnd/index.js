@@ -1,13 +1,14 @@
 const express = require("express"),
       mongoose = require("mongoose"),
       cors = require("cors"),
+      path = require("path"),
       port = 3001,
       jwt = require("jsonwebtoken"),
       bodyParser = require("body-parser"),
       app = express();
 require("dotenv").config();
 
-app.use(express.static(__dirname + "/build"))
+app.use(express.static(path.join((__dirname + "/build")))
 const urlDb = process.env.DB_URL,
       secret = process.env.TOKEN_SECRET;
 
