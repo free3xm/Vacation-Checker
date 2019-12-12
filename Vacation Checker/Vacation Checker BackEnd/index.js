@@ -8,7 +8,7 @@ const express = require("express"),
       app = express();
 require("dotenv").config();
 
-app.use(express.static(path.join((__dirname + "/build")))
+app.use(express.static(path.join((__dirname + "/build"))));
 const urlDb = process.env.DB_URL,
       secret = process.env.TOKEN_SECRET;
 
@@ -27,7 +27,7 @@ function returnData(u){
       email: u.email,
       date: u.date,
       vacations: u.vacations
-  }
+  };
 }
 (async () => {
     try{
@@ -37,7 +37,6 @@ function returnData(u){
     } catch(err){
       console.log(err);
     }
-
 })();
 app.use(cors());
 app.use(bodyParser.json());
@@ -86,7 +85,7 @@ app.post("/signup", async (req, res) => {
     }
 });
 
-app.put("/edit", async(req, res) => {
+app.put("/edit", async (req, res) => {
   const token = req.headers["auth-token"];
   let decoded, user;
   try{
@@ -102,7 +101,7 @@ app.put("/edit", async(req, res) => {
   }
 });
 
-app.put("/addvacation", async(req, res) => {
+app.put("/addvacation", async (req, res) => {
   const token = req.headers["auth-token"];
   let decoded, user;
   try{
